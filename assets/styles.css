@@ -1,0 +1,33 @@
+td.right {
+    text-align: right;
+}
+
+.p0 {
+    background-color: #66FF66;
+}
+
+.p0-1 {
+    background-color: yellowgreen;
+}
+
+.p1 {
+    background-color: yellow;
+}
+
+.p1-2 {
+    background-color: lightcoral;
+}
+
+.p2 {
+    background-color: orange;
+}
+
+.p2-3 {
+    background-color: darkorange;
+}
+.p3 {
+    background-color: red;
+}
+.p-1 {
+    background-color: lightgray;
+}

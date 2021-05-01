@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pollen in {{.RegionName}} - {{.PartregionName}}</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <h1>Pollen in {{.RegionName}}{{if ne .PartregionName ""}} - {{.PartregionName}}{{end}}</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Pflanze</th>
+        <th class="right">Heute</th>
+        <th>Morgen</th>
+        <th>Übermorgen</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Hasel</td>
+        <td class="right p{{.Pollen.Hasel.Today}}">{{.Pollen.Hasel.Today}}</td>
+        <td class="right p{{.Pollen.Hasel.Tomorrow}}">{{.Pollen.Hasel.Tomorrow}}</td>
+        <td class="right p{{.Pollen.Hasel.DayAfterTomorrow}}">{{.Pollen.Hasel.DayAfterTomorrow}}</td>
+      </tr>
+      <tr>
+        <td>Erle</td>
+        <td class="right p{{.Pollen.Erle.Today}}">{{.Pollen.Erle.Today}}</td>
+        <td class="right p{{.Pollen.Erle.Tomorrow}}">{{.Pollen.Erle.Tomorrow}}</td>
+        <td class="right p{{.Pollen.Erle.DayAfterTomorrow}}">{{.Pollen.Erle.DayAfterTomorrow}}</td>
+      </tr>
+      <tr>
+        <td>Esche</td>
+        <td class="right p{{.Pollen.Esche.Today}}">{{.Pollen.Esche.Today}}</td>
+        <td class="right p{{.Pollen.Esche.Tomorrow}}">{{.Pollen.Esche.Tomorrow}}</td>
+        <td class="right p{{.Pollen.Esche.DayAfterTomorrow}}">{{.Pollen.Esche.DayAfterTomorrow}}</td>
+      </tr>
+      <tr>
+        <td>Birke</td>
+        <td class="right p{{.Pollen.Birke.Today}}">{{.Pollen.Birke.Today}}</td>
+        <td class="right p{{.Pollen.Birke.Tomorrow}}">{{.Pollen.Birke.Tomorrow}}</td>
+        <td class="right p{{.Pollen.Birke.DayAfterTomorrow}}">{{.Pollen.Birke.DayAfterTomorrow}}</td>
+      </tr>
+      <tr>
+        <td>Gräser</td>
+        <td class="right p{{.Pollen.Graeser.Today}}">{{.Pollen.Graeser.Today}}</td>
+        <td class="right p{{.Pollen.Graeser.Tomorrow}}">{{.Pollen.Graeser.Tomorrow}}</td>
+        <td class="right p{{.Pollen.Graeser.DayAfterTomorrow}}">{{.Pollen.Graeser.DayAfterTomorrow}}</td>
+      </tr>
+      <tr>
+        <td>Roggen</td>
+        <td class="right p{{.Pollen.Roggen.Today}}">{{.Pollen.Roggen.Today}}</td>
+        <td class="right p{{.Pollen.Roggen.Tomorrow}}">{{.Pollen.Roggen.Tomorrow}}</td>
+        <td class="right p{{.Pollen.Roggen.DayAfterTomorrow}}">{{.Pollen.Roggen.DayAfterTomorrow}}</td>
+      </tr>
+      <tr>
+        <td>Beifuß</td>
+        <td class="right p{{.Pollen.Beifuss.Today}}">{{.Pollen.Beifuss.Today}}</td>
+        <td class="right p{{.Pollen.Beifuss.Tomorrow}}">{{.Pollen.Beifuss.Tomorrow}}</td>
+        <td class="right p{{.Pollen.Beifuss.DayAfterTomorrow}}">{{.Pollen.Beifuss.DayAfterTomorrow}}</td>
+      </tr>
+      <tr>
+        <td>Ambrosia</td>
+        <td class="right p{{.Pollen.Ambrosia.Today}}">{{.Pollen.Ambrosia.Today}}</td>
+        <td class="right p{{.Pollen.Ambrosia.Tomorrow}}">{{.Pollen.Ambrosia.Tomorrow}}</td>
+        <td class="right p{{.Pollen.Ambrosia.DayAfterTomorrow}}">{{.Pollen.Ambrosia.DayAfterTomorrow}}</td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+</html>

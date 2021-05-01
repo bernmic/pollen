@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pollen</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <h1>Pollen</h1>
+  <h3>Letztes Uppdate: {{.LastUpdate}}</h3>
+  <h3>Nächstes Uppdate: {{.NextUpdate}}</h3>
+  <ul>
+    {{range .Content}}
+    <li><a href="/region/{{.RegionId}}/{{.PartregionId}}">{{.RegionName}}{{if ne .PartregionName ""}} - {{.PartregionName}}{{end}}</a></li>
+    {{end}}
+  </ul>
+</body>
+</html>
