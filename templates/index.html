@@ -11,7 +11,7 @@
   <h3>Nächstes Uppdate: {{.NextUpdate}}</h3>
   <ul>
     {{range .Content}}
-    <li><a href="/region/{{.RegionId}}/{{.PartregionId}}">{{.RegionName}}{{if ne .PartregionName ""}} - {{.PartregionName}}{{end}}</a></li>
+    <li><a class="region" href="/region/{{.RegionId}}/{{.PartregionId}}">{{.RegionName}}{{if ne .PartregionName ""}} - {{.PartregionName}}{{end}}</a></li>
     {{end}}
   </ul>
 </body>

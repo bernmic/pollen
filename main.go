@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	POLLEN_URL = "http://opendata.dwd.de/climate_environment/health/alerts/s31fg.json"
+	POLLEN_URL  = "http://opendata.dwd.de/climate_environment/health/alerts/s31fg.json"
 	DATE_LAYOUT = "2006-01-02 15:04 Uhr"
 )
 
@@ -163,8 +163,22 @@ func serveFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Println("Found file " + r.RequestURI)
-	if strings.HasSuffix(r.RequestURI, ".css") {
+	lc := strings.ToLower(r.RequestURI)
+	switch {
+	case strings.HasSuffix(lc, ".css"):
 		w.Header().Add("Content-Type", "text/css")
+	case strings.HasSuffix(lc, ".jpg"):
+		w.Header().Add("Content-Type", "image/jpeg")
+	case strings.HasSuffix(lc, ".jpeg"):
+		w.Header().Add("Content-Type", "image/jpeg")
+	case strings.HasSuffix(lc, ".png"):
+		w.Header().Add("Content-Type", "image/png")
+	case strings.HasSuffix(lc, ".gif"):
+		w.Header().Add("Content-Type", "image/git")
+	case strings.HasSuffix(lc, ".ico"):
+		w.Header().Add("Content-Type", "image/x-icon")
+	case strings.HasSuffix(lc, ".html"):
+		w.Header().Add("Content-Type", "text/html")
 	}
 	w.WriteHeader(http.StatusOK)
 	w.Write(data)

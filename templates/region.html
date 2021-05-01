@@ -7,15 +7,20 @@
 </head>
 <body>
   <h1>Pollen in {{.RegionName}}{{if ne .PartregionName ""}} - {{.PartregionName}}{{end}}</h1>
-  <table>
+  <table width="100%">
     <thead>
       <tr>
-        <th>Pflanze</th>
-        <th class="right">Heute</th>
-        <th>Morgen</th>
-        <th>Übermorgen</th>
+        <th width="25%">Pflanze</th>
+        <th width="25%">Heute</th>
+        <th width="25%">Morgen</th>
+        <th width="25%">Übermorgen</th>
       </tr>
     </thead>
+    <tfoot>
+      <tr>
+        <td colspan="4"><a href="/">Übersicht</a></td>
+      </tr>
+    </tfoot>
     <tbody>
       <tr>
         <td>Hasel</td>

@@ -1,8 +1,8 @@
 # Pollen
 
-Reads pollen data from opendata.dwd.de and show a simple web page with the data.
+Reads pollen data from opendata.dwd.de and shows a simple web page with the data.
 
-There is a Dockerfile to create the smallest possible docker image and a docker-compose.yml to setup the complete app.
+There is a Dockerfile to create the smallest possible docker image and a docker-compose.yaml to setup the complete app.
 
 ## build
 

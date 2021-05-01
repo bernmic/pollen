@@ -1,3 +1,15 @@
+html, body {
+    font-family: sans-serif;
+}
+
+ul {
+    list-style: none;
+}
+
+td, th {
+    padding: 0.5em 1em;
+}
+
 td.right {
     text-align: right;
 }
@@ -30,4 +42,17 @@ td.right {
 }
 .p-1 {
     background-color: lightgray;
+}
+
+a.region {
+    text-decoration: none;
+    color: black;
+}
+
+a.region:hover {
+    text-decoration: underline;
+}
+
+a.region:visited {
+    color: black;
 }
