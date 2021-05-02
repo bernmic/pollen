@@ -1,47 +1,40 @@
-html, body {
-    font-family: sans-serif;
-}
-
 ul {
     list-style: none;
-}
-
-td, th {
-    padding: 0.5em 1em;
+    padding-left: 0;
 }
 
 td.right {
     text-align: right;
 }
 
-.p0 {
-    background-color: #66FF66;
+.pp0 {
+    color: #00FF00;
 }
 
-.p0-1 {
-    background-color: yellowgreen;
+.pp0-1 {
+    color: #ADFF2F;
 }
 
-.p1 {
-    background-color: yellow;
+.pp1 {
+    color: #FFD700;
 }
 
-.p1-2 {
-    background-color: lightcoral;
+.pp1-2 {
+    color: #FFC107;
 }
 
-.p2 {
-    background-color: orange;
+.pp2 {
+    color: #FFA500;
 }
 
-.p2-3 {
-    background-color: darkorange;
+.pp2-3 {
+    color: #FF4500;
 }
-.p3 {
-    background-color: red;
+.pp3 {
+    color: red;
 }
-.p-1 {
-    background-color: lightgray;
+.pp-1 {
+    color: lightgray;
 }
 
 a.region {
@@ -55,4 +48,8 @@ a.region:hover {
 
 a.region:visited {
     color: black;
+}
+
+a.nav-link,.disabled {
+    color: lightyellow !important;
 }
