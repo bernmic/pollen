@@ -221,6 +221,8 @@ func serveFile(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "text/html")
 	case strings.HasSuffix(lc, ".js"):
 		w.Header().Add("Content-Type", "application/javascript")
+	case strings.HasSuffix(lc, ".map"):
+		w.Header().Add("Content-Type", "application/json")
 	case strings.HasSuffix(lc, ".svg"):
 		w.Header().Add("Content-Type", "image/svg+xml")
 	}
