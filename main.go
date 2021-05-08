@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"encoding/xml"
 	"fmt"
 	"html/template"
 	"io/ioutil"
@@ -19,6 +20,9 @@ const (
 	ENV_TEMPLATES = "POLLEN_TEMPLATES_DIR"
 	POLLEN_URL    = "http://opendata.dwd.de/climate_environment/health/alerts/s31fg.json"
 	DATE_LAYOUT   = "2006-01-02 15:04 Uhr"
+	REGION_URI    = "/region/"
+	HEXAL_URI     = "/hexal/"
+	HEXAL_URL     = "http://www.allergie.hexal.de/pollenflug/xml-interface-neu/pollen_de_7tage.php?plz="
 )
 
 var (
@@ -40,6 +44,27 @@ type RegionTemplateData struct {
 	Today            *time.Time
 	Tomorrow         *time.Time
 	DayAfterTomorrow *time.Time
+}
+
+type HexalTemplateData struct {
+	Zip      string
+	City     string
+	Dates    []time.Time
+	Ambrosia []string
+	Ampfer   []string
+	Beifuss  []string
+	Birke    []string
+	Buche    []string
+	Eiche    []string
+	Erle     []string
+	Esche    []string
+	Graeser  []string
+	Hasel    []string
+	Pappel   []string
+	Roggen   []string
+	Ulme     []string
+	Wegerich []string
+	Weide    []string
 }
 
 func main() {
@@ -78,6 +103,8 @@ func handlerIndex(w http.ResponseWriter, r *http.Request) {
 		accessLog(r, http.StatusOK, "")
 	} else if strings.HasPrefix(r.RequestURI, "/region/") {
 		handlerRegion(w, r)
+	} else if strings.HasPrefix(r.RequestURI, "/hexal/") {
+		handlerHexal(w, r)
 	} else if _, err := os.Stat(assetsDir + "/" + r.RequestURI); err == nil {
 		serveFile(w, r)
 	} else {
@@ -129,6 +156,117 @@ func handlerRegion(w http.ResponseWriter, r *http.Request) {
 	}
 	accessLog(r, http.StatusNotFound, "Unknown region / partregion")
 	renderNotFound(w, r)
+}
+
+func handlerHexal(w http.ResponseWriter, r *http.Request) {
+	u := r.RequestURI[7:]
+	log.Println("Looking Hexal at ZIP " + u)
+	p, err := readHexal(u)
+	if err != nil {
+		renderServerError(w, r)
+	}
+	t := HexalTemplateData{}
+	t.Ambrosia = make([]string, 7)
+	t.Ampfer = make([]string, 7)
+	t.Beifuss = make([]string, 7)
+	t.Birke = make([]string, 7)
+	t.Buche = make([]string, 7)
+	t.Eiche = make([]string, 7)
+	t.Erle = make([]string, 7)
+	t.Esche = make([]string, 7)
+	t.Graeser = make([]string, 7)
+	t.Hasel = make([]string, 7)
+	t.Pappel = make([]string, 7)
+	t.Roggen = make([]string, 7)
+	t.Ulme = make([]string, 7)
+	t.Wegerich = make([]string, 7)
+	t.Weide = make([]string, 7)
+	t.Dates = make([]time.Time, 7)
+	w.WriteHeader(200)
+	for _, x := range p.Pollendaten {
+		t.Zip = x.Zip
+		t.City = x.City
+		for _, y := range x.PollenExposure {
+			day, err := strconv.Atoi(y.Day)
+			if err != nil || day > 6 {
+				renderServerError(w, r)
+				return
+			}
+			t.Dates[day] = time.Now().AddDate(0, 0, day)
+			for _, z := range y.Pollen {
+				switch z.Name {
+				case "Ambrosia":
+					t.Ambrosia[day] = z.Exposure
+				case "Ampfer":
+					t.Ampfer[day] = z.Exposure
+				case "Beifuß":
+					t.Beifuss[day] = z.Exposure
+				case "Birke":
+					t.Birke[day] = z.Exposure
+				case "Buche":
+					t.Buche[day] = z.Exposure
+				case "Eiche":
+					t.Eiche[day] = z.Exposure
+				case "Erle":
+					t.Erle[day] = z.Exposure
+				case "Esche":
+					t.Esche[day] = z.Exposure
+				case "Gräser":
+					t.Graeser[day] = z.Exposure
+				case "Hasel":
+					t.Hasel[day] = z.Exposure
+				case "Pappel":
+					t.Pappel[day] = z.Exposure
+				case "Roggen":
+					t.Roggen[day] = z.Exposure
+				case "Ulme":
+					t.Ulme[day] = z.Exposure
+				case "Wegerich":
+					t.Wegerich[day] = z.Exposure
+				case "Weide":
+					t.Weide[day] = z.Exposure
+				}
+			}
+		}
+	}
+	template, err := template.ParseFiles(templateDir + "/hexal.html")
+	if err != nil {
+		accessLog(r, http.StatusInternalServerError, err.Error())
+		renderServerError(w, r)
+		return
+	}
+	template.Execute(w, t)
+	accessLog(r, http.StatusOK, "")
+}
+
+func readHexal(zip string) (*Datasets, error) {
+	pollenClient := http.Client{
+		Timeout: time.Second * 5,
+	}
+
+	req, err := http.NewRequest(http.MethodGet, HEXAL_URL+zip, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := pollenClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	if res.Body != nil {
+		defer res.Body.Close()
+	}
+
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
+	pollenData := Datasets{}
+	err = xml.Unmarshal(body, &pollenData)
+	if err != nil {
+		return nil, err
+	}
+	return &pollenData, nil
 }
 
 func readPollenData() (*PollenData, error) {
