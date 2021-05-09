@@ -21,7 +21,7 @@ const (
 	POLLEN_URL    = "http://opendata.dwd.de/climate_environment/health/alerts/s31fg.json"
 	DATE_LAYOUT   = "2006-01-02 15:04 Uhr"
 	REGION_URI    = "/region/"
-	HEXAL_URI     = "/hexal/"
+	ZIP_URI       = "/zip/"
 	HEXAL_URL     = "http://www.allergie.hexal.de/pollenflug/xml-interface-neu/pollen_de_7tage.php?plz="
 )
 
@@ -103,8 +103,8 @@ func handlerIndex(w http.ResponseWriter, r *http.Request) {
 		accessLog(r, http.StatusOK, "")
 	} else if strings.HasPrefix(r.RequestURI, "/region/") {
 		handlerRegion(w, r)
-	} else if strings.HasPrefix(r.RequestURI, "/hexal/") {
-		handlerHexal(w, r)
+	} else if strings.HasPrefix(r.RequestURI, "/zip") {
+		handlerZip(w, r)
 	} else if _, err := os.Stat(assetsDir + "/" + r.RequestURI); err == nil {
 		serveFile(w, r)
 	} else {
@@ -158,9 +158,18 @@ func handlerRegion(w http.ResponseWriter, r *http.Request) {
 	renderNotFound(w, r)
 }
 
-func handlerHexal(w http.ResponseWriter, r *http.Request) {
-	u := r.RequestURI[7:]
-	log.Println("Looking Hexal at ZIP " + u)
+func handlerZip(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodPost {
+		if err := r.ParseForm(); err != nil {
+			fmt.Fprintf(w, "ParseForm() err: %v", err)
+			return
+		}
+		zip := r.FormValue("zip")
+		http.Redirect(w, r, r.URL.String()+"/"+zip, http.StatusMovedPermanently)
+		return
+	}
+	u := r.RequestURI[5:]
+	log.Println("Looking for zip code " + u)
 	p, err := readHexal(u)
 	if err != nil {
 		renderServerError(w, r)
@@ -229,7 +238,7 @@ func handlerHexal(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
-	template, err := template.ParseFiles(templateDir + "/hexal.html")
+	template, err := template.ParseFiles(templateDir + "/zip.html")
 	if err != nil {
 		accessLog(r, http.StatusInternalServerError, err.Error())
 		renderServerError(w, r)

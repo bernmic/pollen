@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Pollen</title>
-    <link rel="stylesheet" href="/bootstrap.min.css">
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/">Pollen</a>
+        <a class="navbar-brand" href="index.html">Pollen</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -25,13 +25,17 @@
                 </li>
             </ul>
         </div>
+        <form class="d-flex" method="post" action="zip">
+            <input class="form-control me-2" type="search" placeholder="PLZ" name="zip" aria-label="Suche">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
     </div>
 </nav>
 <div class="container">
     <h3>Regionen</h3>
     <ul>
         {{range .Content}}
-        <li><a class="region" href="/region/{{.RegionId}}/{{.PartregionId}}">{{.RegionName}}{{if ne .PartregionName ""}}
+        <li><a class="region" href="region/{{.RegionId}}/{{.PartregionId}}">{{.RegionName}}{{if ne .PartregionName ""}}
             - {{.PartregionName}}{{end}}</a></li>
         {{end}}
     </ul>
