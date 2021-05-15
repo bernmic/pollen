@@ -165,7 +165,12 @@ func handlerZip(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		zip := r.FormValue("zip")
-		http.Redirect(w, r, r.URL.String()+"/"+zip, http.StatusMovedPermanently)
+
+		http.Redirect(w, r, r.Referer()+"zip"+"/"+zip, http.StatusMovedPermanently)
+		accessLog(r, http.StatusMovedPermanently, "")
+		for k, v := range r.Header {
+			fmt.Fprintf(w, "Header field %q, Value %q\n", k, v)
+		}
 		return
 	}
 	u := r.RequestURI[5:]
@@ -378,7 +383,7 @@ func serveFile(w http.ResponseWriter, r *http.Request) {
 }
 
 func accessLog(r *http.Request, httpCode int, payload string) {
-	log.Printf("%s, %d, %s", r.RequestURI, httpCode, payload)
+	log.Printf("%s %s, %d, %s", r.Method, r.RequestURI, httpCode, payload)
 }
 
 func getDates() (today time.Time, tomorrow time.Time, dayAfterTomorrow time.Time) {
