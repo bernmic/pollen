@@ -91,7 +91,7 @@ func main() {
 }
 
 func handlerIndex(w http.ResponseWriter, r *http.Request) {
-	if r.RequestURI == "" || r.RequestURI == "/" || r.RequestURI == "/index.html" {
+	if r.RequestURI == "" || r.RequestURI == "/" {
 		t, _ := template.ParseFiles(templateDir + "/index.html")
 		pollenData, err := readPollenData()
 		if err != nil {
@@ -101,6 +101,9 @@ func handlerIndex(w http.ResponseWriter, r *http.Request) {
 		}
 		t.Execute(w, pollenData)
 		accessLog(r, http.StatusOK, "")
+	} else if r.RequestURI == "/index.html" {
+		http.Redirect(w, r, "./", http.StatusMovedPermanently)
+		accessLog(r, http.StatusMovedPermanently, "Redirect to '/'")
 	} else if strings.HasPrefix(r.RequestURI, "/region/") {
 		handlerRegion(w, r)
 	} else if strings.HasPrefix(r.RequestURI, "/zip") {
@@ -167,14 +170,10 @@ func handlerZip(w http.ResponseWriter, r *http.Request) {
 		zip := r.FormValue("zip")
 
 		http.Redirect(w, r, r.Referer()+"zip"+"/"+zip, http.StatusMovedPermanently)
-		accessLog(r, http.StatusMovedPermanently, "")
-		for k, v := range r.Header {
-			fmt.Fprintf(w, "Header field %q, Value %q\n", k, v)
-		}
+		accessLog(r, http.StatusMovedPermanently, "Redirect to /zip/"+zip)
 		return
 	}
 	u := r.RequestURI[5:]
-	log.Println("Looking for zip code " + u)
 	p, err := readHexal(u)
 	if err != nil {
 		renderServerError(w, r)
