@@ -1,4 +1,4 @@
-module go2music
+module pollen
 
 go 1.16
 
