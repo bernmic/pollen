@@ -1,6 +1,7 @@
 package main
 
 import (
+	"embed"
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
@@ -67,11 +68,17 @@ type HexalTemplateData struct {
 	Weide    []string
 }
 
+//go:embed templates
+var templates embed.FS
+
+//go:embed assets
+var assets embed.FS
+
 func main() {
 	log.Println("Starting pollen.")
 	if ps, ok := os.LookupEnv(ENV_PORT); ok {
 		p, err := strconv.Atoi(ps)
-		if err != nil {
+		if err == nil {
 			port = p
 		}
 	}
@@ -92,7 +99,7 @@ func main() {
 
 func handlerIndex(w http.ResponseWriter, r *http.Request) {
 	if r.RequestURI == "" || r.RequestURI == "/" {
-		t, _ := template.ParseFiles(templateDir + "/index.html")
+		t, _ := template.ParseFS(templates, templateDir+"/index.html")
 		pollenData, err := readPollenData()
 		if err != nil {
 			accessLog(r, http.StatusInternalServerError, err.Error())
@@ -108,7 +115,8 @@ func handlerIndex(w http.ResponseWriter, r *http.Request) {
 		handlerRegion(w, r)
 	} else if strings.HasPrefix(r.RequestURI, "/zip") {
 		handlerZip(w, r)
-	} else if _, err := os.Stat(assetsDir + "/" + r.RequestURI); err == nil {
+	} else if f, err := assets.Open(assetsDir + r.RequestURI); err == nil {
+		f.Close()
 		serveFile(w, r)
 	} else {
 		renderNotFound(w, r)
@@ -144,7 +152,7 @@ func handlerRegion(w http.ResponseWriter, r *http.Request) {
 	}
 	for _, region := range p.Content {
 		if region.RegionId == regionId && region.PartregionId == partregionId {
-			t, err := template.ParseFiles(templateDir + "/region.html")
+			t, _ := template.ParseFS(templates, templateDir+"/region.html")
 			if err != nil {
 				accessLog(r, http.StatusInternalServerError, err.Error())
 				renderServerError(w, r)
@@ -242,7 +250,7 @@ func handlerZip(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
-	template, err := template.ParseFiles(templateDir + "/zip.html")
+	template, err := template.ParseFS(templates, templateDir+"/zip.html")
 	if err != nil {
 		accessLog(r, http.StatusInternalServerError, err.Error())
 		renderServerError(w, r)
@@ -347,7 +355,7 @@ func renderServerError(w http.ResponseWriter, r *http.Request) {
 }
 
 func serveFile(w http.ResponseWriter, r *http.Request) {
-	data, err := ioutil.ReadFile(assetsDir + "/" + r.RequestURI)
+	data, err := assets.ReadFile(assetsDir + r.RequestURI)
 	if err != nil {
 		accessLog(r, http.StatusInternalServerError, err.Error())
 		renderServerError(w, r)
