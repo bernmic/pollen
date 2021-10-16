@@ -9,6 +9,9 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
+      - name: Get the version
+        id: tag
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
       - name: Checkout
         uses: actions/checkout@v2
       - name: Create Release ${{github.ref}}
@@ -22,5 +25,4 @@ jobs:
           draft: false
           prerelease: false
       - name: Build Docker Image
-        run: docker build . --file Dockerfile --tag pollen:${{github.ref}}
-        
+        run: docker build . --file Dockerfile --tag pollen:${{steps.tag.outputs.VERSION}}
