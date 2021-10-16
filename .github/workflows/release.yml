@@ -6,7 +6,7 @@ on:
       - 'v*'
 
 jobs:
-  build_docker:
+  release:
     runs-on: ubuntu-latest
     steps:
       - name: Create Release ${{github.ref}}
@@ -16,9 +16,6 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
-          body: |
-            Changes in this Release
-            - First Change
-            - Second Change
+          body_path: ./CHANGELOG.md
           draft: false
           prerelease: false
