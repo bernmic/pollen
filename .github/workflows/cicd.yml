@@ -2,15 +2,9 @@ name: CICD
 
 on:
   push:
-    branches:
-      - main
-      - staging
-      - develop
+    branches: [$default-branch]
   pull_request:
-    branches:
-      - main
-      - staging
-      - develop
+    branches: [$default-branch]
 
 jobs:
   build:
@@ -19,7 +13,7 @@ jobs:
       - run: echo "Building branch ${{github.ref}} triggered by ${{github.event_name}}"
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Setup Go
+      - name: Set up Go
         uses: actions/setup-go@v2
         with:
           go-version: '1.17'
@@ -28,10 +22,10 @@ jobs:
           go version
           go install golang.org/x/lint/golint
       - name: Build
-        run: go build .
+        run: go build -v ./...
       - name: Lint
         run: |
           go vet .
           golint
       - name: Test
-        run: go test -v
+        run: go test -v ./...
