@@ -1,11 +1,14 @@
 name: Release pipeline
 
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
 
 jobs:
   build_docker:
+    runs-on: ubuntu-latest
     steps:
-      - run: echo "A new release is published"
-      
+      - run: echo "A new release will be published with name ${{ github.ref }}"
