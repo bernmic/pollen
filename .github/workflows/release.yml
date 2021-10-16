@@ -11,4 +11,4 @@ jobs:
   build_docker:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "A new release will be published with name ${{ github.ref#refs/*/ }}"
+      - run: echo "A new release will be published with name ${GITHUB_REF#refs/*/}"
