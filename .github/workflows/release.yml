@@ -5,6 +5,10 @@ on:
     tags:
       - 'v*'
 
+env:
+  REGISTRY: docker.io
+  IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/pollen
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -24,5 +28,15 @@ jobs:
           body_path: CHANGELOG.md
           draft: false
           prerelease: false
-      - name: Build Docker Image
-        run: docker build . --file Dockerfile --tag pollen:${{steps.tag.outputs.VERSION}}
+      - name: Log in to registry ${{ env.REGISTRY }}
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build & Push Docker Image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: ${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.VERSION }}
